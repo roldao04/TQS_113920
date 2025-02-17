@@ -1,0 +1,97 @@
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import tqs.TqsStack;
+
+import java.util.NoSuchElementException;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class _TqsStackTest_ {
+
+
+    TqsStack stack = new TqsStack();
+
+    @BeforeEach
+    public void setUp() {
+        stack = new TqsStack();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        stack = null;
+    }
+
+    // A stack is empty on construction
+    @Test
+    public void testIsEmpty() {
+        assertEquals(true, stack.isEmpty());
+    }
+
+    // A stack has size 0 on construction
+    @Test
+    public void testSize() {
+        assertEquals(0, stack.size());
+    }
+
+    // After n > 0 pushes to an empty stack, the stack is not empty and its size is n
+    @Test
+    public void testSizeAfterPush() {
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        assertEquals(3, stack.size());
+        assertEquals(false, stack.isEmpty());
+    }
+
+    // If one pushes x then pops, the value popped is x
+    @Test
+    public void testPushPop() {
+        stack.push(1);
+        assertEquals(1, stack.pop());
+    }
+
+    // If one pushes x then peeks, the value returned is x, but the size stays the same
+    @Test
+    public void testPushPeek() {
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        assertEquals(3, stack.peek());
+        assertEquals(3, stack.size());
+    }
+
+    // If the size is n, then after n pops, the stack is empty and has a size 0
+    @Test
+    public void testPop() {
+        stack.push(1);
+        stack.push(2);
+        stack.push(3);
+        stack.pop();
+        stack.pop();
+        stack.pop();
+        assertEquals(true, stack.isEmpty());
+        assertEquals(0, stack.size());
+    }
+
+    // Popping from an empty stack throws a NoSuchElementException
+    @Test
+    public void testPopEmpty() {
+        assertThrows(NoSuchElementException.class, () -> stack.pop());
+    }
+
+    // Peeking into an empty stack throws a NoSuchElementException
+    @Test
+    public void testPeekEmpty() {
+        assertThrows(NoSuchElementException.class, () -> stack.peek());
+    }
+    
+    // For bounded stacks only, pushing onto a full stack throws an IllegalStateException
+    @Test
+    public void testPushFull() {
+        stack = new TqsStack(1);
+        stack.push(1);
+        assertThrows(IllegalStateException.class, () -> stack.push(2));
+    }
+}
