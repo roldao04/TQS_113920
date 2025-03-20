@@ -1,0 +1,14 @@
+# To Do List
+- [ ] Architecture & Planning
+    - [ ] Define Technologies
+        - [ ] Reasearch Thymeleaf
+        - [ ] Reasearch Weather API
+    - [ ] Define APIs endpoits
+    - [ ] Database schemas
+- [ ] Low-Fidelity Mockups
+    - [ ] Basic Drawing of Frontend Mockups
+    - [ ] Review Before Starting Development
+- [ ] Backend Development
+- [ ] Frontend Development
+- [ ] Testing & Quality Assurance
+- [ ] Deployment & Finalization 
