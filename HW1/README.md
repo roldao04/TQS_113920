@@ -5,7 +5,7 @@ This project is a full-stack web application for managing meal reservations at t
 
 ### Features
 - View Meal Plans: Students can browse the meal plans for different restaurants on campus.
-- Weather Forecast Integration: Display the weather forecast for each restaurant’s available meal days.
+- Weather Forecast Integration: Display the weather forecast for each restaurant's available meal days.
 - Reservation System: Users can book meal reservations in advance.
 - Reservation Details: Users can check and cancel their reservations.
 - Check-in Page for Staff: Restaurant staff can verify and mark reservations as used.
@@ -14,9 +14,10 @@ This project is a full-stack web application for managing meal reservations at t
 
 ### Technologies Used
 - Backend: Spring Boot (Java)
-- Frontend: HTML, JavaScript (or Thymeleaf for templating)
-- Database: PostgreSQL or MySQL
-- Weather API: Integration with an external weather API (e.g., OpenWeatherMap)
+- Frontend: Vite/React
+- Database: MySQL
+- Weather API: Integration with Visual Crossing Weather API
+- Caching: Redis for weather data
 - Logging: SLF4J with Logback
 - Testing Frameworks:
     - Unit Tests: JUnit
@@ -25,7 +26,27 @@ This project is a full-stack web application for managing meal reservations at t
     - Performance Testing: JMeter / Gatling
 - Code Quality & CI/CD:
     - Code Analysis: SonarQube / Codacy
-    - Continuous Integration: GitHub Actions / Jenkins
+    - Containerization: Docker & Docker Compose
+
+### Docker Deployment
+The application is fully containerized for easy deployment:
+
+1. Quick Start:
+   ```
+   ./start-app.sh
+   ```
+
+2. Manual Start:
+   ```
+   docker-compose up -d
+   ```
+
+3. To stop:
+   ```
+   ./stop-app.sh
+   ```
+   
+For detailed Docker deployment instructions, see [README-DOCKER.md](README-DOCKER.md).
 
 ### Development Timeline Guide
 1. Architecture & Planning
@@ -50,7 +71,7 @@ This project is a full-stack web application for managing meal reservations at t
 - Optimize API performance and caching
 6. Finalizing & Deployment
 - Prepare technical documentation
-- Set up deployment environment (e.g., Docker, AWS, or Heroku)
+- Set up Docker deployment environment
 - Submit the project and schedule presentation
 
 ### Submission Requirements

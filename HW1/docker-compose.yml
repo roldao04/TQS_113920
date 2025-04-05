@@ -1,0 +1,139 @@
+services:
+  # MySQL Database for Meals
+  mysql-meals:
+    image: mysql:8
+    container_name: tqs-mysql-meals
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_MEALS_DATABASE}
+      MYSQL_USER: ${MYSQL_MEALS_USER}
+      MYSQL_PASSWORD: ${MYSQL_MEALS_PASSWORD}
+    volumes:
+      - mysql-meals-data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - tqs-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # MySQL Database for Users
+  mysql-users:
+    image: mysql:8
+    container_name: tqs-mysql-users
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_USERS_DATABASE}
+      MYSQL_USER: ${MYSQL_USERS_USER}
+      MYSQL_PASSWORD: ${MYSQL_USERS_PASSWORD}
+    volumes:
+      - mysql-users-data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - tqs-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for Caching
+  redis:
+    image: redis:alpine
+    container_name: tqs-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - tqs-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Meals Service
+  meals-service:
+    build:
+      context: ./backend/meals
+      dockerfile: Dockerfile
+    container_name: tqs-meals-service
+    restart: unless-stopped
+    environment:
+      - MEALS_SERVICE_PORT=${MEALS_SERVICE_PORT}
+      - MYSQL_MEALS_DATABASE=${MYSQL_MEALS_DATABASE}
+      - MYSQL_MEALS_USER=${MYSQL_MEALS_USER}
+      - MYSQL_MEALS_PASSWORD=${MYSQL_MEALS_PASSWORD}
+      - MEALS_DB_HOST=${MEALS_DB_HOST}
+      - MEALS_DB_PORT=${MEALS_DB_PORT}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PORT=${REDIS_PORT}
+      - WEATHER_API_KEY=${WEATHER_API_KEY}
+    depends_on:
+      mysql-meals:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "${MEALS_SERVICE_PORT}:${MEALS_SERVICE_PORT}"
+    volumes:
+      - ./logs:/logs
+    networks:
+      - tqs-network
+
+  # Users Service
+  users-service:
+    build:
+      context: ./backend/users
+      dockerfile: Dockerfile
+    container_name: tqs-users-service
+    restart: unless-stopped
+    environment:
+      - USERS_SERVICE_PORT=${USERS_SERVICE_PORT}
+      - MYSQL_USERS_DATABASE=${MYSQL_USERS_DATABASE}
+      - MYSQL_USERS_USER=${MYSQL_USERS_USER}
+      - MYSQL_USERS_PASSWORD=${MYSQL_USERS_PASSWORD}
+      - USERS_DB_HOST=${USERS_DB_HOST}
+      - USERS_DB_PORT=${USERS_DB_PORT}
+    depends_on:
+      mysql-users:
+        condition: service_healthy
+    ports:
+      - "${USERS_SERVICE_PORT}:${USERS_SERVICE_PORT}"
+    volumes:
+      - ./logs:/logs
+    networks:
+      - tqs-network
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend/moliceiro_canteen
+      dockerfile: Dockerfile
+    container_name: tqs-frontend
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    depends_on:
+      - meals-service
+      - users-service
+    networks:
+      - tqs-network
+
+networks:
+  tqs-network:
+    driver: bridge
+
+volumes:
+  mysql-meals-data:
+  mysql-users-data:
+  redis-data:
+  logs: 
