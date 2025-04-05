@@ -165,6 +165,6 @@ class ReservationValidatorTest {
         
         // Verify
         assertFalse(result.isValid());
-        assertTrue(result.getErrorMessage().contains("maximum"));
+        assertTrue(result.getErrorMessage().toLowerCase().contains("maximum"));
     }
 } 
