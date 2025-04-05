@@ -65,4 +65,46 @@ class ReservationTest {
         assertEquals(reservation1, reservation2);
         assertEquals(reservation1.hashCode(), reservation2.hashCode());
     }
+
+    @Test
+    void testReservationNullFields() {
+        Reservation reservation = new Reservation();
+        assertNull(reservation.getId());
+        assertNull(reservation.getRestaurant());
+        assertNull(reservation.getMeals());
+        assertNull(reservation.getReservationTime());
+        assertNull(reservation.getCustomerName());
+        assertNull(reservation.getCustomerEmail());
+        assertNull(reservation.getCustomerPhone());
+        assertNull(reservation.getNumberOfPeople());
+        assertNull(reservation.getStatus());
+        assertNull(reservation.getAccessToken());
+    }
+
+    @Test
+    void testReservationWithDifferentFields() {
+        // Create two reservations with different fields
+        Reservation reservation1 = new Reservation();
+        reservation1.setId(1L);
+        reservation1.setCustomerName("John Doe");
+        reservation1.setStatus(ReservationStatus.CONFIRMED);
+        
+        Reservation reservation2 = new Reservation();
+        reservation2.setId(2L);
+        reservation2.setCustomerName("Jane Smith");
+        reservation2.setStatus(ReservationStatus.PENDING);
+        
+        // They should not be equal
+        assertNotEquals(reservation1, reservation2);
+        assertNotEquals(reservation1.hashCode(), reservation2.hashCode());
+        
+        // Update reservation2 to match reservation1
+        reservation2.setId(1L);
+        reservation2.setCustomerName("John Doe");
+        reservation2.setStatus(ReservationStatus.CONFIRMED);
+        
+        // Now they should be equal
+        assertEquals(reservation1, reservation2);
+        assertEquals(reservation1.hashCode(), reservation2.hashCode());
+    }
 } 

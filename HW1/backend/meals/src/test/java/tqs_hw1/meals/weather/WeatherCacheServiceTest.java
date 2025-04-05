@@ -30,7 +30,7 @@ class WeatherCacheServiceTest {
     @InjectMocks
     private WeatherCacheService weatherCacheService;
     
-    private static final long CACHE_TTL = 86400L; // 24 hours in seconds
+    private static final long CACHE_TTL = 3600L; // 1 hour in seconds
     
     @BeforeEach
     void setUp() {
