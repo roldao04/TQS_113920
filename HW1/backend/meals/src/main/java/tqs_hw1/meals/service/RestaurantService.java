@@ -56,29 +56,23 @@ public class RestaurantService {
      * Updates an existing restaurant
      *
      * @param id The ID of the restaurant to update
-     * @param updatedData The updated restaurant data
-     * @return Optional containing the updated restaurant if found, empty otherwise
+     * @param updatedRestaurant The updated restaurant data
+     * @return The updated restaurant
      */
-    public Optional<Restaurant> updateRestaurant(Long id, Restaurant updatedData) {
-        log.info("Updating restaurant with ID: {}", id);
+    public Restaurant updateRestaurant(Long id, Restaurant updatedRestaurant) {
+        Restaurant existingRestaurant = getRestaurantById(id).orElseThrow(() -> new IllegalArgumentException("Restaurant not found"));
         
-        return restaurantRepository.findById(id)
-                .map(existingRestaurant -> {
-                    if (updatedData.getName() != null) {
-                        existingRestaurant.setName(updatedData.getName());
-                    }
-                    if (updatedData.getAddress() != null) {
-                        existingRestaurant.setAddress(updatedData.getAddress());
-                    }
-                    if (updatedData.getDescription() != null) {
-                        existingRestaurant.setDescription(updatedData.getDescription());
-                    }
-                    if (updatedData.getPhoneNumber() != null) {
-                        existingRestaurant.setPhoneNumber(updatedData.getPhoneNumber());
-                    }
-                    
-                    return restaurantRepository.save(existingRestaurant);
-                });
+        if (updatedRestaurant.getName() != null) {
+            existingRestaurant.setName(updatedRestaurant.getName());
+        }
+        if (updatedRestaurant.getAddress() != null) {
+            existingRestaurant.setAddress(updatedRestaurant.getAddress());
+        }
+        if (updatedRestaurant.getDescription() != null) {
+            existingRestaurant.setDescription(updatedRestaurant.getDescription());
+        }
+        
+        return restaurantRepository.save(existingRestaurant);
     }
     
     /**
@@ -89,5 +83,26 @@ public class RestaurantService {
     public void deleteRestaurant(Long id) {
         log.info("Deleting restaurant with ID: {}", id);
         restaurantRepository.deleteById(id);
+    }
+
+    public List<Restaurant> getRestaurantsByName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be null or empty");
+        }
+        return restaurantRepository.findByNameContainingIgnoreCase(name);
+    }
+
+    public List<Restaurant> getRestaurantsByAddress(String address) {
+        if (address == null || address.trim().isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be null or empty");
+        }
+        return restaurantRepository.findByAddressContainingIgnoreCase(address);
+    }
+
+    public void bulkDeleteRestaurants(List<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            throw new IllegalArgumentException("List of IDs cannot be null or empty");
+        }
+        restaurantRepository.deleteAllById(ids);
     }
 } 

@@ -6,7 +6,6 @@
 # SonarQube/SonarCloud
 .scannerwork/
 .sonar/
-sonar-project.properties
 
 # Maven
 target/

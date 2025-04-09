@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,116 +22,226 @@ class RestaurantServiceTest {
 
     @Mock
     private RestaurantRepository restaurantRepository;
-    
+
     @InjectMocks
     private RestaurantService restaurantService;
-    
+
     private Restaurant restaurant1;
     private Restaurant restaurant2;
-    
+
     @BeforeEach
     void setUp() {
         restaurant1 = new Restaurant();
         restaurant1.setId(1L);
-        restaurant1.setName("Restaurant 1");
-        restaurant1.setAddress("Address 1");
-        
+        restaurant1.setName("Moliceiro Restaurant");
+        restaurant1.setDescription("Traditional Portuguese cuisine");
+        restaurant1.setAddress("Aveiro");
+        restaurant1.setPhoneNumber("+351123456789");
+
         restaurant2 = new Restaurant();
         restaurant2.setId(2L);
-        restaurant2.setName("Restaurant 2");
-        restaurant2.setAddress("Address 2");
+        restaurant2.setName("Campus Cafe");
+        restaurant2.setDescription("Quick meals and snacks");
+        restaurant2.setAddress("University Campus");
+        restaurant2.setPhoneNumber("+351987654321");
     }
-    
+
     @Test
-    void testGetAllRestaurants() {
+    void whenGetAllRestaurants_thenReturnAllRestaurants() {
+        // Arrange
         when(restaurantRepository.findAll()).thenReturn(Arrays.asList(restaurant1, restaurant2));
-        
-        List<Restaurant> restaurants = restaurantService.getAllRestaurants();
-        
-        assertEquals(2, restaurants.size());
-        assertEquals("Restaurant 1", restaurants.get(0).getName());
-        assertEquals("Restaurant 2", restaurants.get(1).getName());
-        
-        verify(restaurantRepository, times(1)).findAll();
+
+        // Act
+        List<Restaurant> found = restaurantService.getAllRestaurants();
+
+        // Assert
+        assertThat(found)
+            .hasSize(2)
+            .containsExactly(restaurant1, restaurant2);
+        verify(restaurantRepository).findAll();
     }
-    
+
     @Test
-    void testGetRestaurantById_Found() {
+    void whenGetRestaurantById_withValidId_thenReturnRestaurant() {
+        // Arrange
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant1));
-        
-        Optional<Restaurant> result = restaurantService.getRestaurantById(1L);
-        
-        assertTrue(result.isPresent());
-        assertEquals("Restaurant 1", result.get().getName());
-        
-        verify(restaurantRepository, times(1)).findById(1L);
+
+        // Act
+        Optional<Restaurant> found = restaurantService.getRestaurantById(1L);
+
+        // Assert
+        assertThat(found)
+            .isPresent()
+            .hasValueSatisfying(r -> {
+                assertThat(r.getId()).isEqualTo(1L);
+                assertThat(r.getName()).isEqualTo("Moliceiro Restaurant");
+                assertThat(r.getDescription()).isEqualTo("Traditional Portuguese cuisine");
+            });
+        verify(restaurantRepository).findById(1L);
     }
-    
+
     @Test
-    void testGetRestaurantById_NotFound() {
+    void whenGetRestaurantById_withInvalidId_thenReturnEmpty() {
+        // Arrange
         when(restaurantRepository.findById(99L)).thenReturn(Optional.empty());
-        
-        Optional<Restaurant> result = restaurantService.getRestaurantById(99L);
-        
-        assertFalse(result.isPresent());
-        
-        verify(restaurantRepository, times(1)).findById(99L);
+
+        // Act
+        Optional<Restaurant> found = restaurantService.getRestaurantById(99L);
+
+        // Assert
+        assertThat(found).isEmpty();
+        verify(restaurantRepository).findById(99L);
     }
-    
+
     @Test
-    void testCreateRestaurant() {
-        Restaurant newRestaurant = new Restaurant();
-        newRestaurant.setName("New Restaurant");
-        
-        when(restaurantRepository.save(any(Restaurant.class))).thenReturn(restaurant1);
-        
-        Restaurant created = restaurantService.createRestaurant(newRestaurant);
-        
-        assertNotNull(created);
-        assertEquals("Restaurant 1", created.getName());
-        
-        verify(restaurantRepository, times(1)).save(newRestaurant);
+    void whenCreateRestaurant_thenReturnCreatedRestaurant() {
+        // Arrange
+        when(restaurantRepository.save(restaurant1)).thenReturn(restaurant1);
+
+        // Act
+        Restaurant created = restaurantService.createRestaurant(restaurant1);
+
+        // Assert
+        assertThat(created)
+            .isNotNull()
+            .isEqualTo(restaurant1);
+        verify(restaurantRepository).save(restaurant1);
     }
-    
+
     @Test
-    void testUpdateRestaurant_Success() {
+    void whenCreateRestaurant_withNullName_thenThrowException() {
+        // Arrange
+        Restaurant invalidRestaurant = new Restaurant();
+        invalidRestaurant.setDescription("Test Description");
+        invalidRestaurant.setAddress("Test Address");
+        invalidRestaurant.setPhoneNumber("+351123456789");
+
+        when(restaurantRepository.save(any(Restaurant.class)))
+            .thenThrow(new IllegalArgumentException("Restaurant name cannot be null"));
+
+        // Act & Assert
+        assertThatThrownBy(() -> restaurantService.createRestaurant(invalidRestaurant))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Restaurant name cannot be null");
+    }
+
+    @Test
+    void whenUpdateRestaurant_withExistingId_thenReturnUpdatedRestaurant() {
+        // Arrange
         Restaurant updatedData = new Restaurant();
         updatedData.setName("Updated Name");
         updatedData.setAddress("Updated Address");
-        
+        updatedData.setDescription("Updated Description");
+
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant1));
         when(restaurantRepository.save(any(Restaurant.class))).thenAnswer(i -> i.getArgument(0));
-        
-        Optional<Restaurant> result = restaurantService.updateRestaurant(1L, updatedData);
-        
-        assertTrue(result.isPresent());
-        assertEquals("Updated Name", result.get().getName());
-        assertEquals("Updated Address", result.get().getAddress());
-        
-        verify(restaurantRepository, times(1)).findById(1L);
-        verify(restaurantRepository, times(1)).save(restaurant1);
+
+        // Act
+        Restaurant result = restaurantService.updateRestaurant(1L, updatedData);
+
+        // Assert
+        assertThat(result)
+            .isNotNull()
+            .satisfies(r -> {
+                assertThat(r.getName()).isEqualTo("Updated Name");
+                assertThat(r.getAddress()).isEqualTo("Updated Address");
+                assertThat(r.getDescription()).isEqualTo("Updated Description");
+            });
+        verify(restaurantRepository).findById(1L);
+        verify(restaurantRepository).save(any(Restaurant.class));
     }
-    
+
     @Test
-    void testUpdateRestaurant_NotFound() {
+    void whenUpdateRestaurant_withNonExistingId_thenThrowException() {
+        // Arrange
         Restaurant updatedData = new Restaurant();
-        
         when(restaurantRepository.findById(99L)).thenReturn(Optional.empty());
-        
-        Optional<Restaurant> result = restaurantService.updateRestaurant(99L, updatedData);
-        
-        assertFalse(result.isPresent());
-        
-        verify(restaurantRepository, times(1)).findById(99L);
+
+        // Act & Assert
+        assertThatThrownBy(() -> restaurantService.updateRestaurant(99L, updatedData))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("Restaurant not found");
+        verify(restaurantRepository).findById(99L);
         verify(restaurantRepository, never()).save(any());
     }
-    
+
     @Test
-    void testDeleteRestaurant() {
+    void whenUpdateRestaurant_withPartialData_thenUpdateOnlyProvidedFields() {
+        // Arrange
+        Restaurant updatedData = new Restaurant();
+        updatedData.setName("Updated Name");
+        // Only updating name, other fields should remain unchanged
+
+        when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant1));
+        when(restaurantRepository.save(any(Restaurant.class))).thenAnswer(i -> i.getArgument(0));
+
+        // Act
+        Restaurant result = restaurantService.updateRestaurant(1L, updatedData);
+
+        // Assert
+        assertThat(result)
+            .isNotNull()
+            .satisfies(r -> {
+                assertThat(r.getName()).isEqualTo("Updated Name");
+                assertThat(r.getDescription()).isEqualTo(restaurant1.getDescription());
+                assertThat(r.getAddress()).isEqualTo(restaurant1.getAddress());
+            });
+    }
+
+    @Test
+    void whenDeleteRestaurant_thenRepositoryMethodCalled() {
+        // Arrange
         doNothing().when(restaurantRepository).deleteById(1L);
-        
+
+        // Act
         restaurantService.deleteRestaurant(1L);
-        
-        verify(restaurantRepository, times(1)).deleteById(1L);
+
+        // Assert
+        verify(restaurantRepository).deleteById(1L);
+    }
+
+    @Test
+    void whenGetRestaurantsByName_thenReturnMatchingRestaurants() {
+        // Arrange
+        when(restaurantRepository.findByNameContainingIgnoreCase("Moliceiro"))
+            .thenReturn(Arrays.asList(restaurant1));
+
+        // Act
+        List<Restaurant> found = restaurantService.getRestaurantsByName("Moliceiro");
+
+        // Assert
+        assertThat(found)
+            .hasSize(1)
+            .containsExactly(restaurant1);
+        verify(restaurantRepository).findByNameContainingIgnoreCase("Moliceiro");
+    }
+
+    @Test
+    void whenGetRestaurantsByAddress_thenReturnMatchingRestaurants() {
+        // Arrange
+        when(restaurantRepository.findByAddressContainingIgnoreCase("Aveiro"))
+            .thenReturn(Arrays.asList(restaurant1));
+
+        // Act
+        List<Restaurant> found = restaurantService.getRestaurantsByAddress("Aveiro");
+
+        // Assert
+        assertThat(found)
+            .hasSize(1)
+            .containsExactly(restaurant1);
+        verify(restaurantRepository).findByAddressContainingIgnoreCase("Aveiro");
+    }
+
+    @Test
+    void whenBulkDeleteRestaurants_thenDeleteAll() {
+        // Arrange
+        List<Long> ids = Arrays.asList(1L, 2L);
+        doNothing().when(restaurantRepository).deleteAllById(ids);
+
+        // Act
+        restaurantService.bulkDeleteRestaurants(ids);
+
+        // Assert
+        verify(restaurantRepository).deleteAllById(ids);
     }
 } 

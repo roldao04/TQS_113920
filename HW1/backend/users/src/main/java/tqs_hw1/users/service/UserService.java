@@ -4,16 +4,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tqs_hw1.users.model.User;
 import tqs_hw1.users.repository.UserRepository;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class UserService {
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
     
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     public List<User> getAllUsers() {
         logger.debug("Getting all users");
@@ -38,14 +45,10 @@ public class UserService {
 
     public User createUser(User user) {
         logger.debug("Creating new user: {}", user.getUsername());
-        try {
-            User savedUser = userRepository.save(user);
-            logger.info("User {} created successfully", savedUser.getUsername());
-            return savedUser;
-        } catch (Exception e) {
-            logger.error("Error creating user {}: ", user.getUsername(), e);
-            throw e;
+        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+            throw new IllegalArgumentException("Username already exists");
         }
+        return userRepository.save(user);
     }
 
     public boolean existsByUsername(String username) {
@@ -56,5 +59,20 @@ public class UserService {
     public User findByUsername(String username) {
         logger.debug("Finding user by username: {}", username);
         return userRepository.findByUsername(username).orElse(null);
+    }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    public User updateUser(User user) {
+        if (!userRepository.existsById(user.getId())) {
+            throw new IllegalArgumentException("User not found");
+        }
+        return userRepository.save(user);
     }
 } 
