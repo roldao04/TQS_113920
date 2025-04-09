@@ -20,7 +20,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     
     Optional<Reservation> findByAccessToken(String accessToken);
     
-    List<Reservation> findByCustomerEmail(String email);
+    List<Reservation> findByCustomerUsername(String username);
     
     List<Reservation> findByStatus(String status);
 } 

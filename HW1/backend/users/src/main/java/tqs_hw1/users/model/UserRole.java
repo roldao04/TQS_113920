@@ -4,8 +4,8 @@ package tqs_hw1.users.model;
  * Enum representing the possible roles of a user.
  */
 public enum UserRole {
-    CUSTOMER,
-    RESTAURANT_STAFF,
+    USER,
+    STAFF,
     ADMIN;
     
     /**
@@ -43,7 +43,7 @@ public enum UserRole {
             return UserRole.valueOf(role.toUpperCase());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("Invalid user role: " + role +
-                    ". Valid values are: CUSTOMER, RESTAURANT_STAFF, ADMIN");
+                    ". Valid values are: USER, STAFF, ADMIN");
         }
     }
 } 

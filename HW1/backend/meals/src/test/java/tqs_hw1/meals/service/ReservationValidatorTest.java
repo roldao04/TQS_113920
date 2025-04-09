@@ -44,8 +44,7 @@ class ReservationValidatorTest {
         Reservation reservation = new Reservation();
         reservation.setRestaurant(restaurant);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName("John Doe");
-        reservation.setCustomerEmail("john@example.com");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(2);
         
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
@@ -71,7 +70,7 @@ class ReservationValidatorTest {
         Reservation reservation = new Reservation();
         reservation.setRestaurant(restaurant);
         reservation.setReservationTime(pastTime);
-        reservation.setCustomerName("John Doe");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(2);
         
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
@@ -96,7 +95,7 @@ class ReservationValidatorTest {
         Reservation reservation = new Reservation();
         reservation.setRestaurant(restaurant);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName("John Doe");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(5); // Need 5 more people to exceed capacity of 30
         
         // Create existing reservations totaling 26 people
@@ -131,7 +130,7 @@ class ReservationValidatorTest {
         Reservation reservation = new Reservation();
         reservation.setRestaurant(restaurant);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName(""); // Empty name
+        reservation.setCustomerUsername(""); // Empty name
         reservation.setNumberOfPeople(2);
         
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));
@@ -155,7 +154,7 @@ class ReservationValidatorTest {
         Reservation reservation = new Reservation();
         reservation.setRestaurant(restaurant);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName("John Doe");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(21); // Too many people for one reservation
         
         when(restaurantRepository.findById(1L)).thenReturn(Optional.of(restaurant));

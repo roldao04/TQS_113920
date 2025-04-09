@@ -11,17 +11,17 @@ class UserRoleTest {
 
     @Test
     void testValidRoleValues() {
-        assertTrue(UserRole.isValid("CUSTOMER"));
-        assertTrue(UserRole.isValid("RESTAURANT_STAFF"));
+        assertTrue(UserRole.isValid("USER"));
+        assertTrue(UserRole.isValid("STAFF"));
         assertTrue(UserRole.isValid("ADMIN"));
         
         // Case insensitivity check
-        assertTrue(UserRole.isValid("customer"));
-        assertTrue(UserRole.isValid("Restaurant_Staff"));
+        assertTrue(UserRole.isValid("user"));
+        assertTrue(UserRole.isValid("Staff"));
     }
     
     @ParameterizedTest
-    @ValueSource(strings = {"INVALID", "USER", "STAFF", "MANAGER", "GUEST"})
+    @ValueSource(strings = {"INVALID", "CUSTOMER", "RESTAURANT_STAFF", "MANAGER", "GUEST"})
     void testInvalidRoleValues(String invalidRole) {
         assertFalse(UserRole.isValid(invalidRole));
     }
@@ -34,13 +34,13 @@ class UserRoleTest {
     
     @Test
     void testFromStringWithValidRole() {
-        assertEquals(UserRole.CUSTOMER, UserRole.fromString("CUSTOMER"));
-        assertEquals(UserRole.RESTAURANT_STAFF, UserRole.fromString("restaurant_staff"));
+        assertEquals(UserRole.USER, UserRole.fromString("USER"));
+        assertEquals(UserRole.STAFF, UserRole.fromString("staff"));
         assertEquals(UserRole.ADMIN, UserRole.fromString("Admin"));
     }
     
     @ParameterizedTest
-    @ValueSource(strings = {"INVALID", "USER", "STAFF", "MANAGER", "GUEST"})
+    @ValueSource(strings = {"INVALID", "CUSTOMER", "RESTAURANT_STAFF", "MANAGER", "GUEST"})
     void testFromStringWithInvalidRole(String invalidRole) {
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             UserRole.fromString(invalidRole);

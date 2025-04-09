@@ -74,9 +74,7 @@ class ReservationServiceTest {
         reservation.setRestaurant(restaurant);
         reservation.setMeals(meals);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName("John Doe");
-        reservation.setCustomerEmail("john@example.com");
-        reservation.setCustomerPhone("123-456-7890");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(2);
         reservation.setStatus(ReservationStatus.CONFIRMED);
         reservation.setAccessToken("ABC123");
@@ -92,7 +90,7 @@ class ReservationServiceTest {
         Reservation newReservation = new Reservation();
         newReservation.setRestaurant(restaurant);
         newReservation.setReservationTime(reservationTime);
-        newReservation.setCustomerName("John Doe");
+        newReservation.setCustomerUsername("John Doe");
         newReservation.setNumberOfPeople(2);
         
         List<Long> mealIds = Arrays.asList(1L, 2L);
@@ -137,7 +135,7 @@ class ReservationServiceTest {
         Optional<Reservation> result = reservationService.getReservationByAccessToken("ABC123");
         
         assertTrue(result.isPresent());
-        assertEquals("John Doe", result.get().getCustomerName());
+        assertEquals("John Doe", result.get().getCustomerUsername());
         
         verify(reservationRepository, times(1)).findByAccessToken("ABC123");
     }
@@ -187,7 +185,7 @@ class ReservationServiceTest {
         List<Reservation> results = reservationService.getReservationsForRestaurant(1L);
         
         assertEquals(1, results.size());
-        assertEquals("John Doe", results.get(0).getCustomerName());
+        assertEquals("John Doe", results.get(0).getCustomerUsername());
         
         verify(restaurantRepository, times(1)).findById(1L);
         verify(reservationRepository, times(1)).findByRestaurant(restaurant);

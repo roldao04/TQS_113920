@@ -167,5 +167,5 @@ public class ReservationService {
      */
     private String generateAccessToken() {
         return UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-    }
+    }   
 } 

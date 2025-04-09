@@ -1,0 +1,66 @@
+package tqs_hw1.users.controller;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tqs_hw1.users.dto.LoginRequest;
+import tqs_hw1.users.dto.RegisterRequest;
+import tqs_hw1.users.dto.AuthResponse;
+import tqs_hw1.users.service.AuthService;
+
+import jakarta.annotation.PostConstruct;
+
+@RestController
+@RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:8090", allowedHeaders = "*")
+public class AuthController {
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+    @Autowired
+    private AuthService authService;
+
+    @PostConstruct
+    public void init() {
+        logger.info("AuthController initialized");
+    }
+
+    @GetMapping("/test")
+    public String test() {
+        logger.info("Test endpoint called");
+        return "Auth controller test endpoint!";
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+        logger.info("Login request received for user: {}", request.getUsername());
+        logger.debug("Login request details: {}", request);
+        
+        try {
+            AuthResponse response = authService.login(request);
+            logger.info("Login response for user {}: success={}", request.getUsername(), response.isSuccess());
+            logger.debug("Full login response: {}", response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error during login for user {}: {}", request.getUsername(), e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        logger.info("Register request received for user: {}", request.getUsername());
+        logger.debug("Register request details: {}", request);
+        
+        try {
+            AuthResponse response = authService.register(request);
+            logger.info("Registration response for user {}: success={}", request.getUsername(), response.isSuccess());
+            logger.debug("Full registration response: {}", response);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            logger.error("Error during registration for user {}: {}", request.getUsername(), e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+} 

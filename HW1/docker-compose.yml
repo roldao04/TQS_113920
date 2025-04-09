@@ -3,7 +3,6 @@ services:
   mysql-meals:
     image: mysql:8
     container_name: tqs-mysql-meals
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_MEALS_DATABASE}
@@ -25,7 +24,6 @@ services:
   mysql-users:
     image: mysql:8
     container_name: tqs-mysql-users
-    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_USERS_DATABASE}
@@ -44,10 +42,9 @@ services:
       retries: 5
 
   # Redis for Caching
-  redis:
+  redis-cache-weather:
     image: redis:alpine
-    container_name: tqs-redis
-    restart: unless-stopped
+    container_name: tqs-redis-cache-weather
     ports:
       - "6379:6379"
     volumes:
@@ -66,7 +63,6 @@ services:
       context: ./backend/meals
       dockerfile: Dockerfile
     container_name: tqs-meals-service
-    restart: unless-stopped
     environment:
       - MEALS_SERVICE_PORT=${MEALS_SERVICE_PORT}
       - MYSQL_MEALS_DATABASE=${MYSQL_MEALS_DATABASE}
@@ -80,7 +76,7 @@ services:
     depends_on:
       mysql-meals:
         condition: service_healthy
-      redis:
+      redis-cache-weather:
         condition: service_healthy
     ports:
       - "${MEALS_SERVICE_PORT}:${MEALS_SERVICE_PORT}"
@@ -95,7 +91,6 @@ services:
       context: ./backend/users
       dockerfile: Dockerfile
     container_name: tqs-users-service
-    restart: unless-stopped
     environment:
       - USERS_SERVICE_PORT=${USERS_SERVICE_PORT}
       - MYSQL_USERS_DATABASE=${MYSQL_USERS_DATABASE}
@@ -119,7 +114,7 @@ services:
       context: ./frontend/moliceiro_canteen
       dockerfile: Dockerfile
     container_name: tqs-frontend
-    restart: unless-stopped
+    restart: always
     ports:
       - "${FRONTEND_PORT:-3000}:80"
     depends_on:

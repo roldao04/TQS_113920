@@ -33,14 +33,8 @@ public class Reservation {
     @Column(name = "reservation_time", nullable = false)
     private LocalDateTime reservationTime;
     
-    @Column(name = "customer_name", nullable = false)
-    private String customerName;
-    
-    @Column(name = "customer_email")
-    private String customerEmail;
-    
-    @Column(name = "customer_phone")
-    private String customerPhone;
+    @Column(name = "customer_username", nullable = false)
+    private String customerUsername;
     
     @Column(name = "number_of_people", nullable = false)
     private Integer numberOfPeople;

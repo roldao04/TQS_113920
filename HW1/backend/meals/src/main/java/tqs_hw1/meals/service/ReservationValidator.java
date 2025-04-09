@@ -55,8 +55,8 @@ public class ReservationValidator {
         }
         
         // Check customer details
-        if (reservation.getCustomerName() == null || reservation.getCustomerName().trim().isEmpty()) {
-            return ValidationResult.invalid("Customer name is required");
+        if (reservation.getCustomerUsername() == null || reservation.getCustomerUsername().trim().isEmpty()) {
+            return ValidationResult.invalid("Customer username is required");
         }
         
         // Check number of people

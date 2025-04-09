@@ -33,9 +33,7 @@ class ReservationTest {
         reservation.setRestaurant(restaurant);
         reservation.setMeals(meals);
         reservation.setReservationTime(reservationTime);
-        reservation.setCustomerName("John Doe");
-        reservation.setCustomerEmail("john@example.com");
-        reservation.setCustomerPhone("123-456-7890");
+        reservation.setCustomerUsername("John Doe");
         reservation.setNumberOfPeople(2);
         reservation.setStatus(ReservationStatus.CONFIRMED);
         reservation.setAccessToken("ABC123");
@@ -44,9 +42,7 @@ class ReservationTest {
         assertEquals(restaurant, reservation.getRestaurant());
         assertEquals(meals, reservation.getMeals());
         assertEquals(reservationTime, reservation.getReservationTime());
-        assertEquals("John Doe", reservation.getCustomerName());
-        assertEquals("john@example.com", reservation.getCustomerEmail());
-        assertEquals("123-456-7890", reservation.getCustomerPhone());
+        assertEquals("John Doe", reservation.getCustomerUsername());
         assertEquals(2, reservation.getNumberOfPeople());
         assertEquals(ReservationStatus.CONFIRMED, reservation.getStatus());
         assertEquals("ABC123", reservation.getAccessToken());
@@ -73,9 +69,7 @@ class ReservationTest {
         assertNull(reservation.getRestaurant());
         assertNull(reservation.getMeals());
         assertNull(reservation.getReservationTime());
-        assertNull(reservation.getCustomerName());
-        assertNull(reservation.getCustomerEmail());
-        assertNull(reservation.getCustomerPhone());
+        assertNull(reservation.getCustomerUsername());
         assertNull(reservation.getNumberOfPeople());
         assertNull(reservation.getStatus());
         assertNull(reservation.getAccessToken());
@@ -86,12 +80,12 @@ class ReservationTest {
         // Create two reservations with different fields
         Reservation reservation1 = new Reservation();
         reservation1.setId(1L);
-        reservation1.setCustomerName("John Doe");
+        reservation1.setCustomerUsername("John Doe");
         reservation1.setStatus(ReservationStatus.CONFIRMED);
         
         Reservation reservation2 = new Reservation();
         reservation2.setId(2L);
-        reservation2.setCustomerName("Jane Smith");
+        reservation2.setCustomerUsername("Jane Smith");
         reservation2.setStatus(ReservationStatus.PENDING);
         
         // They should not be equal
@@ -100,7 +94,7 @@ class ReservationTest {
         
         // Update reservation2 to match reservation1
         reservation2.setId(1L);
-        reservation2.setCustomerName("John Doe");
+        reservation2.setCustomerUsername("John Doe");
         reservation2.setStatus(ReservationStatus.CONFIRMED);
         
         // Now they should be equal
