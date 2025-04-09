@@ -28,34 +28,100 @@ This project is a full-stack web application for managing meal reservations at t
     - Code Analysis: SonarQube / Codacy
     - Containerization: Docker & Docker Compose
 
-### Development Timeline Guide
-1. Architecture & Planning
-- Define REST API endpoints
-- Design database schema
-- Research and choose weather API
-- Identify caching mechanism
-2. Low-Fidelity Mockups & Frontend Design
-- Create wireframes for the application
-- Define the user journey and key interactions
-- Implement basic UI components
-3. Backend Development
-- Implement REST API with Spring Boot
-- Connect to the database and create models
-- Integrate weather API and implement caching logic
-4. Frontend Development
-- Develop the web interface
-- Connect interface with SpringBoot backend
-5. Testing & Optimization
-- Write and run unit tests
-- Perform integration and functional tests
-- Optimize API performance and caching
-6. Finalizing & Deployment
-- Prepare technical documentation
-- Set up Docker deployment environment
-- Submit the project and schedule presentation
+### Getting Started
 
-### Submission Requirements
-- Technical Report: Explains the adopted development strategy, test results, and SonarQube analysis.
-- Code Repository: Hosted in the TQS Git repository under /HW1.
-- Video Demonstration: Short screencast demonstrating the project features.
-- Oral Presentation: Scheduled presentation of the project.
+#### Prerequisites
+- Docker and Docker Compose installed on your system
+- Git for cloning the repository
+
+#### Installation and Running with Docker
+
+1. Clone the repository:
+```bash
+git clone https://github.com/roldao04/TQS_113920.git
+cd TQS_113920/HW1
+```
+
+2. Create a `.env` file in the root directory with the following environment variables:
+```env
+# MySQL Configuration
+MYSQL_ROOT_PASSWORD=your_root_password
+MYSQL_DATABASE=moliceiro_canteen
+MYSQL_USER=your_username
+MYSQL_PASSWORD=your_password
+
+# Spring Boot Configuration
+SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/moliceiro_canteen
+SPRING_DATASOURCE_USERNAME=your_username
+SPRING_DATASOURCE_PASSWORD=your_password
+
+# Weather API Configuration
+WEATHER_API_KEY=your_weather_api_key
+
+# Redis Configuration
+REDIS_HOST=redis
+REDIS_PORT=6379
+```
+
+3. Build and run the containers:
+```bash
+docker-compose up --build
+```
+
+The application will be available at:
+- Frontend: http://localhost:8090
+- Meals Service API: http://localhost:8080
+- Users Service API: http://localhost:8081
+
+### API Documentation
+#### Meals Service API
+The Meals Service provides endpoints for managing restaurants, meals, and reservations.
+
+Access the Swagger UI documentation at:
+```
+http://localhost:8080/api/swagger-ui/index.html
+```
+
+#### Users Service API
+The Users Service handles user authentication and management.
+
+Access the Swagger UI documentation at:
+```
+http://localhost:8081/api/swagger-ui/index.html
+```
+
+### Project Structure
+```
+HW1/
+├── backend/
+│   ├── meals/          # Meals service (Spring Boot)
+│   └── users/          # Users service (Spring Boot)
+├── frontend/
+│   └── moliceiro_canteen/  # React frontend
+├── docker-compose.yml  # Docker composition
+└── README.md          # This file
+```
+
+### Development
+
+#### Running Services Individually
+
+##### Backend Services
+1. Meals Service:
+```bash
+cd backend/meals
+mvn spring-boot:run
+```
+
+2. Users Service:
+```bash
+cd backend/users
+mvn spring-boot:run
+```
+
+##### Frontend
+```bash
+cd frontend/moliceiro_canteen
+npm install
+npm run dev
+```
