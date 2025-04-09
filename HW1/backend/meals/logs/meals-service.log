@@ -1,8 +1,0 @@
-2025-04-09 17:11:50 [main] INFO  t.meals.config.RedisConfigTest - Starting RedisConfigTest using Java 21.0.6 with PID 431554 (started by roldao in /home/roldao/Desktop/LEI/TQS/TQS_113920/HW1/backend/meals)
-2025-04-09 17:11:50 [main] DEBUG t.meals.config.RedisConfigTest - Running with Spring Boot v3.1.5, Spring v6.0.13
-2025-04-09 17:11:50 [main] INFO  t.meals.config.RedisConfigTest - No active profile set, falling back to 1 default profile: "default"
-2025-04-09 17:11:52 [main] INFO  t.meals.config.RedisConfigTest - Started RedisConfigTest in 2.119 seconds (process running for 7.795)
-2025-04-09 17:19:14 [main] INFO  t.meals.config.RedisConfigTest - Starting RedisConfigTest using Java 21.0.6 with PID 435144 (started by roldao in /home/roldao/Desktop/LEI/TQS/TQS_113920/HW1/backend/meals)
-2025-04-09 17:19:14 [main] DEBUG t.meals.config.RedisConfigTest - Running with Spring Boot v3.1.5, Spring v6.0.13
-2025-04-09 17:19:14 [main] INFO  t.meals.config.RedisConfigTest - No active profile set, falling back to 1 default profile: "default"
-2025-04-09 17:19:15 [main] INFO  t.meals.config.RedisConfigTest - Started RedisConfigTest in 2.339 seconds (process running for 9.623)
