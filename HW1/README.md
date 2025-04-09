@@ -28,26 +28,6 @@ This project is a full-stack web application for managing meal reservations at t
     - Code Analysis: SonarQube / Codacy
     - Containerization: Docker & Docker Compose
 
-### Docker Deployment
-The application is fully containerized for easy deployment:
-
-1. Quick Start:
-   ```
-   ./start-app.sh
-   ```
-
-2. Manual Start:
-   ```
-   docker-compose up -d
-   ```
-
-3. To stop:
-   ```
-   ./stop-app.sh
-   ```
-   
-For detailed Docker deployment instructions, see [README-DOCKER.md](README-DOCKER.md).
-
 ### Development Timeline Guide
 1. Architecture & Planning
 - Define REST API endpoints
